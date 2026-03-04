@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/your-org/gcli/pkg/config"
 	"github.com/your-org/gcli/pkg/output"
 )
 
@@ -41,6 +42,9 @@ func NewRootCommand(streams IOStreams) (*cobra.Command, *State) {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if err := config.LoadStartupEnvFile(); err != nil {
+				return err
+			}
 			if state.JSON {
 				state.Output = string(output.FormatJSON)
 			}

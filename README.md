@@ -193,6 +193,13 @@ cd /root/go/src/gcli
 
 ## 运行时环境变量
 
+加载优先级（高 -> 低）：
+
+- 命令行参数（如 `auth login --client-id/--client-secret`）
+- 进程环境变量（`GCLI_*`，非空值）
+- 环境变量文件（默认 `~/.config/gcli/env`，可用 `GCLI_ENV_FILE` 指定）
+- 内置默认值（如 `GCLI_GMAIL_TOKEN_URL`）
+
 必填：
 
 - `GCLI_GMAIL_CLIENT_ID`
