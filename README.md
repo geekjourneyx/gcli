@@ -21,7 +21,12 @@ make build
 ## 技能列表（给 Agent 用）
 
 - `skills/gcli/SKILL.md`：`gcli` 运行与排障手册（云服务器 OAuth、SSH 隧道、读信命令、常见错误处理）
-- `skills/gcli-dev/SKILL.md`：`gcli` 开发与交付手册（实现流程、测试门禁、发布检查）
+
+推荐安装方式：
+
+```bash
+npx skills add https://github.com/geekjourneyx/gcli --skill gcli
+```
 
 示例触发语句：
 

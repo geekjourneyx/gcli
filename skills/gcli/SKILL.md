@@ -1,55 +1,56 @@
 ---
 name: gcli
-description: Operate and troubleshoot the gcli Gmail CLI in cloud-server scenarios. Use this skill whenever users mention Gmail automation, OAuth login on servers, SSH tunnel auth, mail list/search/get, refresh token setup, or ask for step-by-step operational help with this repository.
+description: Operate and troubleshoot the gcli Gmail CLI on cloud servers. Use this skill whenever users ask for Gmail OAuth login, SSH tunnel authorization, refresh token setup, mail list/search/get execution, full email content extraction, or debugging 403/redirect_uri/token/network errors in this repository.
 ---
 
-# gcli skill
+# gcli - Gmail CLI Agent 操作手册
 
-面向本仓库 `gcli` 的 Agent 操作手册。目标是让 Agent 在“云服务器运行 CLI、本地浏览器授权”的场景下，稳定完成鉴权、读信、排障、验证与交付。
+用于指导 Agent 在本仓库中稳定操作 `gcli`：鉴权、读取邮件、排障、交付检查。
 
-## 适用场景
+## 安装（推荐）
 
-当用户出现以下任一需求时，优先使用本技能：
+```bash
+npx skills add https://github.com/geekjourneyx/gcli --skill gcli
+```
 
-- 让你帮忙“登录 Gmail / 做 OAuth 鉴权 / 拿 refresh token”
-- 让你在服务器上跑 `gcli mail list/search/get`
-- 让你排查 `403 access_denied` / `redirect_uri_mismatch` / `AUTH_*` 错误
-- 让你写保姆级教程、SOP、值班操作手册
-- 让你做 release 前验证（`make fmt vet lint test release-check build`）
+## 触发条件（意图识别）
 
-## 核心原则
+当用户出现以下意图时，立即使用本技能：
 
-1. 先确认上下文，再执行命令。
-- 确认目录为仓库根：`/root/go/src/gcli`
-- 确认二进制存在：`./bin/gcli`
-- 确认 env 文件位置（默认 `/tmp/gcli.env`）
+- 要求“登录 Gmail / OAuth 鉴权 / 获取 refresh token”
+- 提到“云服务器 + 本地浏览器授权 / SSH 隧道”
+- 要求执行 `gcli mail list` / `search` / `get`
+- 要求“读取某封邮件完整正文或 raw MIME”
+- 报错包含 `403 access_denied`、`redirect_uri_mismatch`、`AUTH_*`、DNS 失败
+- 要求编写或核对该 CLI 的使用手册/SOP
 
-2. 生产安全优先。
-- 不在日志中回显 `client_secret` / `refresh_token` 全文
-- 若凭据泄露，立即建议用户在 Google Cloud 重建 OAuth 客户端
-- 仅申请最小权限：`gmail.readonly`
+## 执行前检查
 
-3. 优先可观测输出。
-- 默认 JSON 输出，错误读取 `error.code` 和可选 `error.details`
-- 出错先判定网络、凭据、OAuth 配置、scope，再判断代码问题
+按顺序执行以下检查：
 
-## 标准执行流程
+1. 确认仓库目录是 `/root/go/src/gcli`
+2. 确认二进制可用：`./bin/gcli version`
+3. 确认环境变量文件（默认 `/tmp/gcli.env`）
+4. 不输出完整 `client_secret` 与 `refresh_token`
 
-### A. 鉴权准备
+## 标准流程
 
-1. 确认 Google Cloud 基础配置
+### A. 鉴权流程（云服务器）
+
+1. 检查 Google Cloud 配置
 - 已启用 Gmail API
-- OAuth 同意屏幕可用
-- 测试中应用已把登录邮箱加到“测试用户”
+- OAuth 同意屏幕已配置
+- 测试状态下已添加测试用户
 - OAuth 客户端已配置 redirect URI：`http://127.0.0.1:8787/callback`
 
-2. 建议使用云服务器授权模式
-- 本地建隧道：
+2. 在本地电脑建立隧道
 ```bash
 ssh -N -L 8787:127.0.0.1:8787 <user>@<server>
 ```
-- 服务器执行：
+
+3. 在云服务器执行登录
 ```bash
+cd /root/go/src/gcli
 ./bin/gcli auth login \
   --client-id "..." \
   --client-secret "..." \
@@ -58,7 +59,7 @@ ssh -N -L 8787:127.0.0.1:8787 <user>@<server>
   --print-env
 ```
 
-3. 写入运行环境
+4. 写入运行环境并加载
 ```bash
 cat >/tmp/gcli.env <<'EOF_ENV'
 GCLI_GMAIL_CLIENT_ID=...
@@ -71,15 +72,15 @@ source /tmp/gcli.env
 set +a
 ```
 
-### B. 读取邮件
+### B. 读信流程
 
-1. 轻量列表（低配额）
+1. 低配额列表（默认）
 ```bash
 ./bin/gcli mail list --label INBOX --limit 20
 ```
-说明：默认不逐条 hydrate，`from/subject` 可能为空。
+说明：默认去 N+1，`from/subject` 可能为空。
 
-2. 富信息列表（会额外调用 API）
+2. 富字段列表（需要额外 API 调用）
 ```bash
 ./bin/gcli mail list --label INBOX --limit 20 --hydrate
 ```
@@ -96,63 +97,56 @@ set +a
 ./bin/gcli mail get --id "<message_id>" --format full
 ./bin/gcli mail get --id "<message_id>" --format raw
 ```
+说明：`full` 返回 `body_text/body_html`；`raw` 返回 `raw_mime`，体积可能很大。
 
-### C. 质量门禁（开发/交付）
+### C. 交付检查流程
+
+在开发/提交前执行：
 
 ```bash
 make fmt vet lint test release-check build
 ```
 
-## 错误排查手册
+## 故障排查（先看错误码）
 
-1. `403 access_denied` 且提示“应用正在测试中”
-- 在 OAuth 同意屏幕的“测试用户”添加当前邮箱
+1. `403 access_denied`（应用测试中）
+- 在 OAuth 同意屏幕添加测试用户
 - 等 1-5 分钟后重试
 
 2. `redirect_uri_mismatch`
-- 检查 Google Cloud OAuth 客户端是否配置：
-  `http://127.0.0.1:8787/callback`
-- 检查命令 `--redirect-uri` 是否完全一致
+- 确认 OAuth 客户端与命令行 `--redirect-uri` 完全一致
 
 3. `AUTH_NO_REFRESH_TOKEN`
-- 说明 token 响应没有 refresh token
-- 重新授权并确保触发 consent
+- 重新走授权同意流程，确保拿到 `refresh_token`
 
 4. `AUTH_SCOPE_INSUFFICIENT`
-- 检查 scope 是否至少为：
-  `https://www.googleapis.com/auth/gmail.readonly`
+- 确认 scope 至少包含：`https://www.googleapis.com/auth/gmail.readonly`
 
 5. `INTERNAL` 且 `details.operation=users.messages.*`
-- 先看 `details.http_status` 与 `details.google_reason`
-- 再区分是网络问题、配额问题、权限问题、输入参数问题
+- 优先看 `details.http_status` 与 `details.google_reason`
 
 6. `Could not resolve host: oauth2.googleapis.com`
-- 服务器 DNS/出网策略问题，不是业务代码问题
+- 服务器 DNS/出网问题，不是业务代码问题
 
-## 输出契约速记
+## 输出契约
 
 成功：
 ```json
 {"version":"v1","data":{},"error":null}
 ```
 
-失败（含可选 details）：
+失败：
 ```json
 {"version":"v1","data":null,"error":{"code":"...","message":"...","retryable":false,"details":{"operation":"...","http_status":"...","google_reason":"..."}}}
 ```
 
-## Agent 执行建议
+## 安全规则
 
-1. 用户让你“帮我测一下”，优先执行：
-- `source /tmp/gcli.env`
-- `./bin/gcli mail list --label INBOX --limit 1`
+- 不输出完整密钥与令牌
+- 凭据泄露时，建议立刻轮换 OAuth 客户端
+- 默认最小权限：`gmail.readonly`
 
-2. 用户要完整字段，明确提醒：
-- `list/search` 需加 `--hydrate`
-- `get --format full/raw` 返回体积可能很大
+## 示例触发语句
 
-3. 用户要上线发布，最小清单：
-- 门禁全绿
-- `CHANGELOG.md` 同步
-- `scripts/install.sh`/`Makefile`/`CHANGELOG.md` 版本一致
-
+- “请使用 gcli 技能，帮我在云服务器完成 Gmail 鉴权并验证 `mail list --hydrate`。”
+- “请按 gcli 操作手册排查 `redirect_uri_mismatch`。”
