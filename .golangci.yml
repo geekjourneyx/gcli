@@ -1,0 +1,13 @@
+version: "2"
+run:
+  tests: true
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - ineffassign
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
