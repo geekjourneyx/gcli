@@ -23,7 +23,7 @@ description: Operate and troubleshoot the gcli Gmail CLI on cloud servers. Use t
 按顺序执行以下检查：
 
 1. 确认仓库目录是 `/root/go/src/gcli`
-2. 确认二进制可用：`./bin/gcli version`
+2. 确认二进制可用：`gcli version`
 3. 确认环境变量文件（默认 `/tmp/gcli.env`）
 4. 不输出完整 `client_secret` 与 `refresh_token`
 
@@ -45,7 +45,7 @@ ssh -N -L 8787:127.0.0.1:8787 <user>@<server>
 3. 在云服务器执行登录
 ```bash
 cd /root/go/src/gcli
-./bin/gcli auth login \
+gcli auth login \
   --client-id "..." \
   --client-secret "..." \
   --redirect-uri "http://127.0.0.1:8787/callback" \
@@ -70,23 +70,23 @@ set +a
 
 1. 低配额列表（默认）
 ```bash
-./bin/gcli mail list --label INBOX --limit 20
+gcli mail list --label INBOX --limit 20
 ```
 说明：默认去 N+1，`from/subject` 可能为空。
 
 2. 富字段列表（需要额外 API 调用）
 ```bash
-./bin/gcli mail list --label INBOX --limit 20 --hydrate
+gcli mail list --label INBOX --limit 20 --hydrate
 ```
 
 3. 搜索
 ```bash
-./bin/gcli mail search --q "newer_than:7d" --limit 20
-./bin/gcli mail search --q "from:alerts@example.com" --limit 20 --hydrate
+gcli mail search --q "newer_than:7d" --limit 20
+gcli mail search --q "from:alerts@example.com" --limit 20 --hydrate
 # 位置参数写法（等价于 --q）
-./bin/gcli mail search "in:inbox is:unread from:boss@company.com" --max 50
+gcli mail search "in:inbox is:unread from:boss@company.com" --max 50
 # 分页别名（等价于 --page-token）
-./bin/gcli mail search "has:attachment filename:pdf" --max 20 --page "<next_page_token>"
+gcli mail search "has:attachment filename:pdf" --max 20 --page "<next_page_token>"
 ```
 说明：
 - `--max` 是 `--limit` 别名，`--page` 是 `--page-token` 别名。
@@ -104,9 +104,9 @@ set +a
 
 4. 单封邮件
 ```bash
-./bin/gcli mail get --id "<message_id>" --format metadata
-./bin/gcli mail get --id "<message_id>" --format full
-./bin/gcli mail get --id "<message_id>" --format raw
+gcli mail get --id "<message_id>" --format metadata
+gcli mail get --id "<message_id>" --format full
+gcli mail get --id "<message_id>" --format raw
 ```
 说明：`full` 返回 `body_text/body_html`；`raw` 返回 `raw_mime`，体积可能很大。
 
