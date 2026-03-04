@@ -83,7 +83,24 @@ set +a
 ```bash
 ./bin/gcli mail search --q "newer_than:7d" --limit 20
 ./bin/gcli mail search --q "from:alerts@example.com" --limit 20 --hydrate
+# 位置参数写法（等价于 --q）
+./bin/gcli mail search "in:inbox is:unread from:boss@company.com" --max 50
+# 分页别名（等价于 --page-token）
+./bin/gcli mail search "has:attachment filename:pdf" --max 20 --page "<next_page_token>"
 ```
+说明：
+- `--max` 是 `--limit` 别名，`--page` 是 `--page-token` 别名。
+- 返回字段包含：`id`、`thread_id`、`date`、`from`、`subject`、`label_ids`。
+- `from/subject/date` 的完整精度依赖 `--hydrate`；未开启时可能为空或回退为 `internal_date`。
+
+常见 Gmail `q` 语法：
+- `in:inbox` / `in:sent` / `in:drafts` / `in:trash` / `in:spam`
+- `is:unread` / `is:starred` / `is:important`
+- `from:sender@example.com` / `to:recipient@example.com`
+- `subject:keyword`
+- `has:attachment` / `filename:pdf`
+- `after:2024/01/01` / `before:2024/12/31`
+- `label:Work` / `label:UNREAD`
 
 4. 单封邮件
 ```bash
