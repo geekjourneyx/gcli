@@ -27,10 +27,10 @@ func TestListMessagesAndGetMessage(t *testing.T) {
 		Transport: roundTripFunc(func(req *http.Request) (*http.Response, error) {
 			switch {
 			case req.Method == http.MethodGet && req.URL.Path == "/gmail/v1/users/me/messages":
-				return jsonResponse(http.StatusOK, `{"messages":[{"id":"abc","threadId":"thread-1","snippet":"hello-list","internalDate":"1700000000000"}],"resultSizeEstimate":1}`), nil
+				return jsonResponse(http.StatusOK, `{"messages":[{"id":"abc","threadId":"thread-1","snippet":"hello-list","internalDate":"1700000000000","labelIds":["INBOX"]}],"resultSizeEstimate":1}`), nil
 			case req.Method == http.MethodGet && req.URL.Path == "/gmail/v1/users/me/messages/abc":
 				getCalls++
-				return jsonResponse(http.StatusOK, `{"id":"abc","threadId":"thread-1","snippet":"hello","internalDate":"1700000000000","payload":{"headers":[{"name":"From","value":"bot@example.com"},{"name":"Subject","value":"status"},{"name":"Date","value":"Tue, 01 Jan 2026 00:00:00 +0000"}]}}`), nil
+				return jsonResponse(http.StatusOK, `{"id":"abc","threadId":"thread-1","snippet":"hello","internalDate":"1700000000000","labelIds":["INBOX","UNREAD"],"payload":{"headers":[{"name":"From","value":"bot@example.com"},{"name":"Subject","value":"status"},{"name":"Date","value":"Tue, 01 Jan 2026 00:00:00 +0000"}]}}`), nil
 			default:
 				return jsonResponse(http.StatusNotFound, `{"error":{"code":404,"message":"Not Found"}}`), nil
 			}
@@ -58,6 +58,9 @@ func TestListMessagesAndGetMessage(t *testing.T) {
 	if page.Messages[0].Subject != "" {
 		t.Fatalf("unexpected subject without hydrate: %s", page.Messages[0].Subject)
 	}
+	if len(page.Messages[0].LabelIDs) != 1 || page.Messages[0].LabelIDs[0] != "INBOX" {
+		t.Fatalf("unexpected labels without hydrate: %+v", page.Messages[0].LabelIDs)
+	}
 	if getCalls != 0 {
 		t.Fatalf("expected zero users.messages.get calls, got %d", getCalls)
 	}
@@ -71,6 +74,12 @@ func TestListMessagesAndGetMessage(t *testing.T) {
 	}
 	if pageHydrated.Messages[0].Subject != "status" {
 		t.Fatalf("unexpected hydrated subject: %s", pageHydrated.Messages[0].Subject)
+	}
+	if pageHydrated.Messages[0].Date != "Tue, 01 Jan 2026 00:00:00 +0000" {
+		t.Fatalf("unexpected hydrated date: %s", pageHydrated.Messages[0].Date)
+	}
+	if len(pageHydrated.Messages[0].LabelIDs) != 2 {
+		t.Fatalf("unexpected hydrated labels: %+v", pageHydrated.Messages[0].LabelIDs)
 	}
 	if getCalls == 0 {
 		t.Fatal("expected users.messages.get calls when hydrate=true")

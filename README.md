@@ -155,6 +155,10 @@ cd /root/go/src/gcli
 
 # 搜索
 ./bin/gcli mail search --q "newer_than:7d" --limit 5
+# 位置参数写法（等价于 --q）
+./bin/gcli mail search "is:unread from:boss@example.com" --max 50
+# 分页别名（等价于 --page-token）
+./bin/gcli mail search "has:attachment filename:pdf" --max 20 --page "NEXT_TOKEN"
 
 # 读取单封元信息
 ./bin/gcli mail get --id "邮件ID" --format metadata
@@ -165,6 +169,19 @@ cd /root/go/src/gcli
 # 读取原始 MIME
 ./bin/gcli mail get --id "邮件ID" --format raw
 ```
+
+搜索语法速查（Gmail 原生 `q`）：
+
+- `in:inbox` / `in:sent` / `in:drafts` / `in:trash` / `in:spam`
+- `is:unread` / `is:starred` / `is:important`
+- `from:sender@example.com` / `to:recipient@example.com`
+- `subject:keyword`
+- `has:attachment` / `filename:pdf`
+- `after:2024/01/01` / `before:2024/12/31`
+- `label:Work` / `label:UNREAD`
+
+返回字段（`mail search`）包含：`id`、`thread_id`、`date`、`from`、`subject`、`label_ids`。  
+说明：`from/subject/date` 的完整精度依赖 `--hydrate`，否则可能为空或回退为 `internal_date`。
 
 ### 第 9 步：常见报错与处理
 

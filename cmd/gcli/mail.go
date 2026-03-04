@@ -75,11 +75,19 @@ func newMailSearchCommand(state *State, streams IOStreams) *cobra.Command {
 	)
 
 	cmd := &cobra.Command{
-		Use:   "search",
+		Use:   "search [query]",
 		Short: "Search messages with Gmail q syntax",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if strings.TrimSpace(query) == "" {
-				return errorsx.New(errorsx.CodeInputInvalid, "--q is required", false)
+			queryFlag := strings.TrimSpace(query)
+			queryArg := strings.TrimSpace(strings.Join(args, " "))
+			if queryFlag != "" && queryArg != "" {
+				return errorsx.New(errorsx.CodeInputInvalid, "use either --q or positional query, not both", false)
+			}
+			if queryFlag == "" {
+				queryFlag = queryArg
+			}
+			if queryFlag == "" {
+				return errorsx.New(errorsx.CodeInputInvalid, "--q or positional query is required", false)
 			}
 			if err := mustPositiveLimit(limit); err != nil {
 				return errorsx.Wrap(errorsx.CodeInputInvalid, "invalid limit", false, err)
@@ -93,7 +101,7 @@ func newMailSearchCommand(state *State, streams IOStreams) *cobra.Command {
 			}
 
 			res, err := client.ListMessages(ctx, gmail.ListOptions{
-				Query:     query,
+				Query:     queryFlag,
 				PageToken: pageToken,
 				Limit:     limit,
 				Hydrate:   hydrate,
@@ -107,7 +115,9 @@ func newMailSearchCommand(state *State, streams IOStreams) *cobra.Command {
 
 	cmd.Flags().StringVar(&query, "q", "", "Gmail search query")
 	cmd.Flags().Int64Var(&limit, "limit", 20, "Maximum results to return")
+	cmd.Flags().Int64Var(&limit, "max", 20, "Alias for --limit")
 	cmd.Flags().StringVar(&pageToken, "page-token", "", "Pagination token")
+	cmd.Flags().StringVar(&pageToken, "page", "", "Alias for --page-token")
 	cmd.Flags().BoolVar(&hydrate, "hydrate", false, "Fetch each message metadata for from/subject/date (extra API calls)")
 
 	return cmd

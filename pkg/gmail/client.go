@@ -60,7 +60,7 @@ func (c *Client) ListMessages(ctx context.Context, opts ListOptions) (model.Mess
 	}
 
 	call := c.svc.Users.Messages.List("me").MaxResults(opts.Limit)
-	call = call.Fields("messages(id,threadId,snippet,internalDate)", "nextPageToken", "resultSizeEstimate")
+	call = call.Fields("messages(id,threadId,snippet,internalDate,labelIds)", "nextPageToken", "resultSizeEstimate")
 	if strings.TrimSpace(opts.Label) != "" {
 		call = call.LabelIds(opts.Label)
 	}
@@ -92,6 +92,8 @@ func (c *Client) ListMessages(ctx context.Context, opts ListOptions) (model.Mess
 			ThreadID:     m.ThreadId,
 			Snippet:      m.Snippet,
 			InternalDate: internalDateToRFC3339(m.InternalDate),
+			Date:         internalDateToRFC3339(m.InternalDate),
+			LabelIDs:     m.LabelIds,
 		})
 	}
 
@@ -110,6 +112,9 @@ func (c *Client) ListMessages(ctx context.Context, opts ListOptions) (model.Mess
 		}
 		if summary.InternalDate == "" {
 			summary.InternalDate = page.Messages[i].InternalDate
+		}
+		if summary.Date == "" {
+			summary.Date = page.Messages[i].Date
 		}
 		page.Messages[i] = summary
 	}
@@ -166,8 +171,10 @@ func (c *Client) getMessageSummary(ctx context.Context, id string) (model.Messag
 		ThreadID:     detail.ThreadID,
 		Snippet:      detail.Snippet,
 		InternalDate: detail.InternalDate,
+		Date:         detail.Headers["date"],
 		From:         detail.Headers["from"],
 		Subject:      detail.Headers["subject"],
+		LabelIDs:     detail.LabelIDs,
 	}, nil
 }
 

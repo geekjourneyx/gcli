@@ -2,12 +2,14 @@ package model
 
 // MessageSummary is a compact message representation for list/search responses.
 type MessageSummary struct {
-	ID           string `json:"id"`
-	ThreadID     string `json:"thread_id"`
-	Snippet      string `json:"snippet"`
-	InternalDate string `json:"internal_date"`
-	From         string `json:"from"`
-	Subject      string `json:"subject"`
+	ID           string   `json:"id"`
+	ThreadID     string   `json:"thread_id"`
+	Snippet      string   `json:"snippet"`
+	InternalDate string   `json:"internal_date"`
+	Date         string   `json:"date,omitempty"`
+	From         string   `json:"from"`
+	Subject      string   `json:"subject"`
+	LabelIDs     []string `json:"label_ids,omitempty"`
 }
 
 // MessagePage is a paginated collection of message summaries.

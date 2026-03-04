@@ -142,11 +142,15 @@ func renderTable(data any, w io.Writer) error {
 }
 
 func writeMessagePage(tw *tabwriter.Writer, page model.MessagePage) error {
-	if _, err := fmt.Fprintln(tw, "ID\tFROM\tSUBJECT\tDATE"); err != nil {
+	if _, err := fmt.Fprintln(tw, "ID\tTHREAD\tFROM\tSUBJECT\tDATE\tLABELS"); err != nil {
 		return err
 	}
 	for _, m := range page.Messages {
-		if _, err := fmt.Fprintf(tw, "%s\t%s\t%s\t%s\n", m.ID, m.From, m.Subject, m.InternalDate); err != nil {
+		displayDate := strings.TrimSpace(m.Date)
+		if displayDate == "" {
+			displayDate = m.InternalDate
+		}
+		if _, err := fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t%s\t%s\n", m.ID, m.ThreadID, m.From, m.Subject, displayDate, strings.Join(m.LabelIDs, ",")); err != nil {
 			return err
 		}
 	}
