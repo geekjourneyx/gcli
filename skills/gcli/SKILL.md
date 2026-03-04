@@ -7,12 +7,6 @@ description: Operate and troubleshoot the gcli Gmail CLI on cloud servers. Use t
 
 用于指导 Agent 在本仓库中稳定操作 `gcli`：鉴权、读取邮件、排障、交付检查。
 
-## 安装（推荐）
-
-```bash
-npx skills add https://github.com/geekjourneyx/gcli --skill gcli
-```
-
 ## 触发条件（意图识别）
 
 当用户出现以下意图时，立即使用本技能：
