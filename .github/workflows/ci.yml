@@ -31,6 +31,6 @@ jobs:
       - name: Test
         run: CGO_ENABLED=1 go test -count=1 ./...
       - name: Build
-        run: CGO_ENABLED=1 go build -o ./bin/gcli ./main.go
+        run: make build
       - name: Release consistency
         run: make release-check

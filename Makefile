@@ -1,5 +1,7 @@
 CLI_NAME ?= gcli
 VERSION ?= 0.1.0
+VERSION_PKG ?= github.com/geekjourneyx/gcli/cmd/gcli
+LDFLAGS ?= -X $(VERSION_PKG).Version=$(VERSION)
 GO ?= go
 GOCACHE ?= /tmp/go-build
 GOMODCACHE ?= /tmp/go-mod-cache
@@ -8,7 +10,7 @@ GOLANGCI_LINT_CACHE ?= /tmp/golangci-lint-cache
 .PHONY: build fmt vet lint test e2e release-check
 
 build:
-	GOCACHE=$(GOCACHE) GOMODCACHE=$(GOMODCACHE) CGO_ENABLED=1 $(GO) build -o ./bin/$(CLI_NAME) ./main.go
+	GOCACHE=$(GOCACHE) GOMODCACHE=$(GOMODCACHE) CGO_ENABLED=1 $(GO) build -ldflags "$(LDFLAGS)" -o ./bin/$(CLI_NAME) ./main.go
 
 fmt:
 	@out="$$(gofmt -l .)"; \
