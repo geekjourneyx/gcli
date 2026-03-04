@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/your-org/gcli/pkg/config"
-	"github.com/your-org/gcli/pkg/output"
+	"github.com/geekjourneyx/gcli/pkg/config"
+	"github.com/geekjourneyx/gcli/pkg/output"
 )
 
 // Version is overridden at build time via ldflags.

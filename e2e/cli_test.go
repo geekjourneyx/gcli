@@ -3,11 +3,13 @@ package e2e
 import (
 	"bytes"
 	"encoding/json"
+	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/your-org/gcli/cmd/gcli"
-	"github.com/your-org/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/cmd/gcli"
+	"github.com/geekjourneyx/gcli/pkg/config"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
 )
 
 func TestVersionCommandJSON(t *testing.T) {
@@ -26,6 +28,10 @@ func TestVersionCommandJSON(t *testing.T) {
 }
 
 func TestMailListMissingCredentials(t *testing.T) {
+	t.Setenv(config.EnvClientID, "")
+	t.Setenv(config.EnvClientSecret, "")
+	t.Setenv(config.EnvRefreshToken, "")
+
 	stdout, stderr, err := runCLI(t, []string{"mail", "list", "--limit", "1"}, "")
 	if err == nil {
 		t.Fatal("expected error, got nil")
@@ -41,6 +47,8 @@ func TestMailListMissingCredentials(t *testing.T) {
 
 func runCLI(t *testing.T, args []string, stdin string) (string, string, error) {
 	t.Helper()
+	t.Setenv(config.EnvConfigFile, filepath.Join(t.TempDir(), "missing.env"))
+
 	var out bytes.Buffer
 	var errOut bytes.Buffer
 

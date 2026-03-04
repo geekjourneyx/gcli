@@ -14,11 +14,11 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/your-org/gcli/pkg/auth"
-	"github.com/your-org/gcli/pkg/config"
-	"github.com/your-org/gcli/pkg/errorsx"
-	"github.com/your-org/gcli/pkg/model"
-	"github.com/your-org/gcli/pkg/output"
+	"github.com/geekjourneyx/gcli/pkg/auth"
+	"github.com/geekjourneyx/gcli/pkg/config"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/model"
+	"github.com/geekjourneyx/gcli/pkg/output"
 )
 
 const defaultRedirectURI = "http://127.0.0.1:8787/callback"

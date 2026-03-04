@@ -2,7 +2,7 @@
 set -euo pipefail
 
 VERSION="0.1.0"
-REPO="your-org/gcli"
+REPO="geekjourneyx/gcli"
 BASE="https://github.com/${REPO}/releases/download/v${VERSION}"
 
 os="$(uname -s | tr '[:upper:]' '[:lower:]')"

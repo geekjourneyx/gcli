@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/your-org/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
 )
 
 const (

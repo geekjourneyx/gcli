@@ -1,4 +1,4 @@
-module github.com/your-org/gcli
+module github.com/geekjourneyx/gcli
 
 go 1.26.0
 

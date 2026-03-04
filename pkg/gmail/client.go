@@ -14,9 +14,9 @@ import (
 	"google.golang.org/api/googleapi"
 	"google.golang.org/api/option"
 
-	"github.com/your-org/gcli/pkg/config"
-	"github.com/your-org/gcli/pkg/errorsx"
-	"github.com/your-org/gcli/pkg/model"
+	"github.com/geekjourneyx/gcli/pkg/config"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/model"
 )
 
 const (

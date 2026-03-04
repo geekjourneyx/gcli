@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/your-org/gcli/pkg/errorsx"
-	"github.com/your-org/gcli/pkg/gmail"
-	"github.com/your-org/gcli/pkg/output"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/gmail"
+	"github.com/geekjourneyx/gcli/pkg/output"
 )
 
 func newMailCommand(state *State, streams IOStreams) *cobra.Command {

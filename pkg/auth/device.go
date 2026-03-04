@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/your-org/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
 )
 
 const deviceGrantType = "urn:ietf:params:oauth:grant-type:device_code"

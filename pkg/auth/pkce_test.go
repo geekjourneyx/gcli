@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/your-org/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
 )
 
 type rtFunc func(*http.Request) (*http.Response, error)

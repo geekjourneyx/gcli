@@ -11,7 +11,7 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/your-org/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
 )
 
 type AuthCodeFlowParams struct {

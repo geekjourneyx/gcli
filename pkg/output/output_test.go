@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/your-org/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
 )
 
 func TestRenderSuccessJSON(t *testing.T) {

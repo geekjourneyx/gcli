@@ -7,8 +7,8 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/your-org/gcli/pkg/errorsx"
-	"github.com/your-org/gcli/pkg/model"
+	"github.com/geekjourneyx/gcli/pkg/errorsx"
+	"github.com/geekjourneyx/gcli/pkg/model"
 )
 
 const schemaVersion = "v1"
