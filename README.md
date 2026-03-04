@@ -18,6 +18,15 @@ make build
 ./bin/gcli version
 ```
 
+## 技能列表（给 Agent 用）
+
+- `skills/gcli/SKILL.md`：`gcli` 运行与排障手册（云服务器 OAuth、SSH 隧道、读信命令、常见错误处理）
+- `skills/gcli-dev/SKILL.md`：`gcli` 开发与交付手册（实现流程、测试门禁、发布检查）
+
+示例触发语句：
+
+- “请使用 `gcli` 技能，帮我在云服务器上完成 Gmail 鉴权并排查 403 错误。”
+
 ---
 
 ## 保姆级教程（中文，云服务器场景）
