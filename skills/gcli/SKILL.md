@@ -1,11 +1,11 @@
 ---
 name: gcli
-description: "Use this skill to operate the gcli Gmail CLI for practical email tasks: inbox triage, Gmail query search, message/thread retrieval, full content extraction, and machine-readable output handling. Trigger when users ask to查邮件、筛选邮件、读完整正文、按条件搜索、提取附件相关邮件、或让 Agent 直接执行 gcli 命令并解释结果."
+description: "Use this skill to operate the gcli Gmail CLI for practical email tasks: inbox triage, Gmail query search, message/thread retrieval, full content extraction, and machine-readable output handling. Trigger when users ask to查邮件、筛选邮件、读完整正文、按条件搜索、提取附件相关邮件、或直接执行 gcli 命令并解释结果."
 ---
 
 # gcli - 邮件查询执行技能
 
-用于指导 Agent 用 `gcli` 帮用户“查到邮件并给出可执行下一步”，而不是讲解底层实现。
+用于指导使用 `gcli` 帮用户“查到邮件并给出可执行下一步”，而不是讲解底层实现。
 
 ## 触发条件（意图识别）
 
@@ -75,7 +75,7 @@ gcli mail get --id "<message_id>" --format raw
 - `after:2024/01/01` / `before:2024/12/31`
 - `label:Work` / `label:UNREAD`
 
-## Agent 响应模式（最佳实践）
+## 响应模式（最佳实践）
 
 1. 先给命令，再给结果解释，最后给下一步选项。
 2. 先最小查询，再深挖；避免一上来 `--hydrate` 或 `--format raw`。
@@ -98,6 +98,19 @@ gcli mail get --id "<message_id>" --format full
 - `AUTH_SCOPE_INSUFFICIENT`：scope 非 `gmail.readonly`
 - `MAIL_NOT_FOUND`：`message_id` 无效或已删除
 - `TIMEOUT`：减小 `--limit` 或重试
+
+鉴权失败时（`AUTH_*`）先引导执行 login 流程：
+
+```bash
+gcli auth login \
+  --client-id "..." \
+  --client-secret "..." \
+  --redirect-uri "http://127.0.0.1:8787/callback" \
+  --auth-timeout 10m \
+  --print-env
+```
+
+成功后写入并加载环境变量，再重试原邮件命令。
 
 ## 输出契约
 
