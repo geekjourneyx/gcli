@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION="0.1.0"
+VERSION="1.0.0"
 REPO="geekjourneyx/gcli"
 BASE="https://github.com/${REPO}/releases/download/v${VERSION}"
 

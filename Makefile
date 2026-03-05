@@ -1,5 +1,5 @@
 CLI_NAME ?= gcli
-VERSION ?= 0.1.0
+VERSION ?= 1.0.0
 VERSION_PKG ?= github.com/geekjourneyx/gcli/cmd/gcli
 LDFLAGS ?= -X $(VERSION_PKG).Version=$(VERSION)
 GO ?= go
