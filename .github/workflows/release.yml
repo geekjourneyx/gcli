@@ -44,10 +44,9 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          pattern: gcli-*
           path: .dist
-      - name: Flatten artifacts
-        run: |
-          find .dist -type f -name 'gcli-*' -exec mv {} .dist/ \;
+          merge-multiple: true
       - name: Generate checksums
         run: |
           cd .dist
