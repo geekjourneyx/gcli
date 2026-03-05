@@ -21,10 +21,15 @@ description: "Use this skill to operate the gcli Gmail CLI for practical email t
 
 按顺序执行以下检查：
 
-1. 确认命令可用：`gcli version`
-2. 确认凭据已就绪：`GCLI_GMAIL_CLIENT_ID`、`GCLI_GMAIL_CLIENT_SECRET`、`GCLI_GMAIL_REFRESH_TOKEN`
-3. 默认 JSON 输出；用户明确要人读表格时再用 `--output table`
-4. 不输出完整密钥与令牌
+1. 先检查命令：`command -v gcli`
+2. 如果找不到命令，自动执行安装：
+```bash
+curl -fsSL https://raw.githubusercontent.com/geekjourneyx/gcli/main/scripts/install.sh | bash
+```
+3. 安装后再次确认：`gcli version`
+4. 确认凭据已就绪：`GCLI_GMAIL_CLIENT_ID`、`GCLI_GMAIL_CLIENT_SECRET`、`GCLI_GMAIL_REFRESH_TOKEN`
+5. 默认 JSON 输出；用户明确要人读表格时再用 `--output table`
+6. 不输出完整密钥与令牌
 
 ## 标准工作流
 
